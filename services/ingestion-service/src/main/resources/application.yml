@@ -1,0 +1,24 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+finnhub:
+  api-key: ${FINNHUB_API_KEY}
+  symbols:
+    - AAPL
+    - MSFT
+    - NVDA
+    - AMZN
+    - GOOGL
+    - GOOG
+    - META
+    - "BRK.B"
+    - TSLA
+    - JPM
+
+app:
+  topics:
+    raw-ticks: raw-ticks
