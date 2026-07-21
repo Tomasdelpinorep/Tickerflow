@@ -5,6 +5,7 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/services/ingestion-service/pom.xml" />
+        <option value="$PROJECT_DIR$/services/candle-aggregator/pom.xml" />
       </list>
     </option>
   </component>
