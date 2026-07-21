@@ -61,6 +61,7 @@ public class FinnhubWebSocketClient implements WebSocket.Listener {
             chain = chain.thenCompose(ws -> ws.sendText(data, true)); // chain sends sequentially, waiting for each to complete before the next
         }
 
+        log.info("Connected to Finnhub, subscribing to {} symbols", properties.symbols().size());
         Listener.super.onOpen(webSocket); //webSocket.request(1); Marks websocket as ready to receive 1 request
     }
 
@@ -68,6 +69,7 @@ public class FinnhubWebSocketClient implements WebSocket.Listener {
     public CompletionStage<?> onText(WebSocket webSocket, CharSequence data, boolean last) {
         try {
             JsonNode root = objectMapper.readTree(data.toString());
+            log.info("Received message from Finnhub: type={}", root.get("type").asString());
 
             if (!root.get("type").asString().equalsIgnoreCase("trade")){
                 return Listener.super.onText(webSocket, data, last);
