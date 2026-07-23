@@ -1,1 +1,12 @@
-spring.application.name=candle-aggregator
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    streams:
+      application-id: candle-aggregator
+      properties:
+        default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+
+app:
+  topics:
+    raw-ticks: raw-ticks
+    candles: candles
