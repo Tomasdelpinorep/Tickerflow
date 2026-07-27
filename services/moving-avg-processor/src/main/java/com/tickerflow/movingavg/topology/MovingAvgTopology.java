@@ -38,7 +38,7 @@ public class MovingAvgTopology {
     }
 
     @Bean
-    private KStream<String, CandleEvent> buildTopology(StreamsBuilder builder) {
+    public KStream<String, CandleEvent> buildTopology(StreamsBuilder builder) {
         KStream<String, CandleEvent> candleStream = builder.stream(candlesTopic,
                 Consumed.with(Serdes.String(), jsonSerde(CandleEvent.class)));
 
