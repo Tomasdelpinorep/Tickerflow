@@ -1,0 +1,21 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: trading-engine
+      auto-offset-reset: earliest
+  datasource:
+    url: jdbc:postgresql://localhost:5432/tickerflow
+    username: tickerflow
+    password: tickerflow
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: trading
+
+app:
+  topics:
+    signals: signals
+    trade-events: trade-events
