@@ -5,7 +5,7 @@ spring:
       group-id: trading-engine
       auto-offset-reset: earliest
   datasource:
-    url: jdbc:postgresql://localhost:5432/tickerflow
+    url: jdbc:postgresql://localhost:5433/tickerflow
     username: tickerflow
     password: tickerflow
   jpa:

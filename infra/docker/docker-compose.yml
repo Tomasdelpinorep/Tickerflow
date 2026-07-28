@@ -42,7 +42,7 @@ services:
       image: postgres:16
       container_name: tickerflow-postgres
       ports:
-        - "5432:5432"
+        - "5433:5432"
       environment:
         - POSTGRES_USER=tickerflow
         - POSTGRES_PASSWORD=tickerflow
