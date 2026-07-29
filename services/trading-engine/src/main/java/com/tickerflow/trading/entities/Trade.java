@@ -30,7 +30,13 @@ public class Trade {
 
     private int quantity;
 
-    private BigDecimal price;
+    @Column(name = "open_price")
+    private BigDecimal openPrice;
+
+    @Column(name = "close_price")
+    private BigDecimal closePrice;
+
+    private BigDecimal pnl;
 
     @Enumerated(EnumType.STRING)
     private TradeStatus status;

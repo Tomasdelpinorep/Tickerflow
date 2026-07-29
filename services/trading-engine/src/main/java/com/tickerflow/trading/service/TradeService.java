@@ -42,6 +42,10 @@ public class TradeService {
             }
 
             Trade latest = latestOpenTrade.get();
+            latest.setClosePrice(BigDecimal.valueOf(signal.smaShort()));
+            BigDecimal priceDiff = latest.getClosePrice().subtract(latest.getOpenPrice());
+            BigDecimal pnl = priceDiff.multiply(BigDecimal.valueOf(latest.getQuantity()));
+            latest.setPnl(pnl);
             latest.setStatus(TradeStatus.CLOSED);
             tradeRepo.save(latest);
             saveOutboxEvent(OutboxEvents.TRADE_CLOSED, latest);
@@ -50,7 +54,7 @@ public class TradeService {
                     .symbol(signal.symbol())
                     .signalType(signal.signalType())
                     .quantity(TradeConstants.DEFAULT_TRADE_QUANTITY)
-                    .price(BigDecimal.valueOf(signal.smaShort()))
+                    .openPrice(BigDecimal.valueOf(signal.smaShort()))
                     .status(TradeStatus.OPEN)
                     .createdAt(Instant.now())
                     .build());

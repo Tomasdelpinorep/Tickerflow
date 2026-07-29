@@ -52,7 +52,7 @@ Local pipeline complete and working end-to-end. AWS deployment is phase 2.
 - [x] Moving Average Processor (Kafka Streams — SMA-20/50 crossover signals)
 - [x] Trading Engine (paper trades, transactional outbox, choreography saga)
 - [x] Notification Service (Kafka consumer → email via Mailgun SMTP)
-- [ ] Trade lifecycle — close positions on opposing signal, calculate P&L
+- [ ] Trade P&L — open_price/close_price/pnl columns, calculate on position close
 - [ ] Schema Registry (Avro — versioned event contracts, replace JSON)
 - [ ] AWS deployment (MSK, ECS Fargate, RDS, Terraform)
 - [ ] Observability (CloudWatch, X-Ray)

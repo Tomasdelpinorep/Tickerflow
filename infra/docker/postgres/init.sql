@@ -7,7 +7,9 @@ CREATE TABLE trading.trades (
     id          BIGSERIAL PRIMARY KEY,
     symbol      VARCHAR(10) NOT NULL,
     signal_type VARCHAR(10) NOT NULL,
-    price       DECIMAL(10,2) NOT NULL,
+    open_price  DECIMAL(10,2) NOT NULL,
+    close_price DECIMAL(10,2),
+    pnl         DECIMAL(10,2),
     quantity    INT NOT NULL DEFAULT 10,
     status      VARCHAR(20) NOT NULL DEFAULT 'OPEN',
     created_at  TIMESTAMP NOT NULL DEFAULT NOW()
