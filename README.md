@@ -44,26 +44,38 @@ flowchart LR
 
 ## Status
 
-🚧 Early scaffolding. Build order:
+Local pipeline complete and working end-to-end. AWS deployment is phase 2.
 
-- [ ] Docker Compose environment (Kafka, Postgres)
-- [ ] Ingestion Service (Finnhub → Kafka)
-- [ ] Candle aggregation (Kafka Streams)
-- [ ] Moving average + crossover signals
-- [ ] Paper trading engine + outbox pattern
-- [ ] Notification service
-- [ ] Schema registry (Avro)
-- [ ] AWS deployment (MSK, ECS, RDS, IaC)
+- [x] Docker Compose environment (Kafka in KRaft mode, Postgres)
+- [x] Ingestion Service (Finnhub WebSocket → Kafka `raw-ticks`)
+- [x] Candle Aggregator (Kafka Streams — 1m/5m/1h OHLC windows)
+- [x] Moving Average Processor (Kafka Streams — SMA-20/50 crossover signals)
+- [x] Trading Engine (paper trades, transactional outbox, choreography saga)
+- [x] Notification Service (Kafka consumer → email via Mailgun SMTP)
+- [ ] Trade lifecycle — close positions on opposing signal, calculate P&L
+- [ ] Schema Registry (Avro — versioned event contracts, replace JSON)
+- [ ] AWS deployment (MSK, ECS Fargate, RDS, Terraform)
 - [ ] Observability (CloudWatch, X-Ray)
 
 ## Local Development
 
+Prerequisites: Docker Desktop, Java 21
+
 ```bash
-docker compose up -d
+# Start Kafka (KRaft mode) and Postgres
+docker compose -f infra/docker/docker-compose.yml up -d
+
+# Start services (each in its own terminal or IntelliJ run configuration)
+# Order: ingestion → candle-aggregator → moving-avg-processor → trading-engine → notification-service
 ```
 
-(Compose file coming in the next phase.)
+Services connect to:
+- Kafka: `localhost:9092`
+- Postgres: `localhost:5433` (mapped to avoid conflict with local Postgres on 5432)
 
 ## Architecture Decisions
 
-Design rationale and trade-offs will be documented in `/docs/adr` as the project progresses.
+- **Outbox pattern** over dual-write: DB write and Kafka publish in one transaction; a poller publishes unpublished rows. Eliminates the window where a crash leaves DB and Kafka out of sync.
+- **Choreography saga** over orchestration: no central coordinator; each service reacts to events and emits its own. Looser coupling, no single point of failure.
+- **Kafka Streams** over consumer loop for aggregation: stateful operators (windowed aggregation, joins) with built-in fault tolerance via RocksDB changelog topics.
+- **Schema-per-service Postgres**: each service owns its schema, enforcing that services never share tables or bypass the event bus.

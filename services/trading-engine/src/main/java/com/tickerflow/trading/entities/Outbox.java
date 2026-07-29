@@ -1,5 +1,6 @@
 package com.tickerflow.trading.entities;
 
+import com.tickerflow.trading.enums.OutboxEvents;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,8 +21,9 @@ public class Outbox {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "event_type")
-    private String eventType;
+    private OutboxEvents eventType;
 
     private String payload;
 

@@ -1,5 +1,7 @@
 package com.tickerflow.trading.entities;
 
+import com.tickerflow.trading.enums.SignalType;
+import com.tickerflow.trading.enums.TradeStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,14 +24,16 @@ public class Trade {
 
     private String symbol;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "signal_type")
-    private String signalType;
+    private SignalType signalType;
 
     private int quantity;
 
     private BigDecimal price;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private TradeStatus status;
 
     @Column(name = "created_at")
     private Instant createdAt;
