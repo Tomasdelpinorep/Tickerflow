@@ -26,11 +26,20 @@ import java.util.Map;
 public class CandleTopology {
     private final String rawTicksTopic;
     private final String candlesTopic;
+    private final String candle1mStore;
+    private final String candle5mStore;
+    private final String candle1hStore;
 
     public CandleTopology(@Value("${app.topics.raw-ticks}") String rawTicksTopic,
-                          @Value("${app.topics.candles}") String candlesTopic) {
+                          @Value("${app.topics.candles}") String candlesTopic,
+                          @Value("${app.stores.candle-1m}") String candle1mStore,
+                          @Value("${app.stores.candle-5m}") String candle5mStore,
+                          @Value("${app.stores.candle-1h}") String candle1hStore) {
         this.rawTicksTopic = rawTicksTopic;
         this.candlesTopic = candlesTopic;
+        this.candle1mStore = candle1mStore;
+        this.candle5mStore = candle5mStore;
+        this.candle1hStore = candle1hStore;
     }
 
     @Bean
@@ -38,9 +47,9 @@ public class CandleTopology {
         KStream<String, TickEvent> tickStream = builder.stream(rawTicksTopic,
                 Consumed.with(Serdes.String(), jsonSerde(TickEvent.class)));
 
-        buildCandleStream(tickStream, Duration.ofMinutes(1), "1m", "candle-1m-store");
-        buildCandleStream(tickStream, Duration.ofMinutes(5), "5m", "candle-5m-store");
-        buildCandleStream(tickStream, Duration.ofHours(1), "1h", "candle-1h-store");
+        buildCandleStream(tickStream, Duration.ofMinutes(1), "1m", candle1mStore);
+        buildCandleStream(tickStream, Duration.ofMinutes(5), "5m", candle5mStore);
+        buildCandleStream(tickStream, Duration.ofHours(1), "1h", candle1hStore);
 
         return tickStream;
     }

@@ -10,3 +10,7 @@ app:
   topics:
     raw-ticks: raw-ticks
     candles: candles
+  stores:
+    candle-1m: candle-1m-store
+    candle-5m: candle-5m-store
+    candle-1h: candle-1h-store

@@ -31,10 +31,14 @@ import java.util.Map;
 public class MovingAvgTopology {
     private final String candlesTopic;
     private final String signalsTopic;
+    private final String smaStoreName;
 
-    MovingAvgTopology(@Value("${app.topics.candles}") String candlesTopic, @Value("${app.topics.signals}") String signalsTopic) {
+    MovingAvgTopology(@Value("${app.topics.candles}") String candlesTopic,
+                      @Value("${app.topics.signals}") String signalsTopic,
+                      @Value("${app.stores.sma}") String smaStoreName) {
         this.candlesTopic = candlesTopic;
         this.signalsTopic = signalsTopic;
+        this.smaStoreName = smaStoreName;
     }
 
     @Bean
@@ -72,7 +76,7 @@ public class MovingAvgTopology {
                             return PriceBuffer.builder()
                                     .closes(closes).prevSmaShort(smaShort).prevSmaLong(smaLong).signalType(signalType).build();
                         },
-                        Materialized.<String, PriceBuffer, KeyValueStore<Bytes, byte []>>as("sma-store")
+                        Materialized.<String, PriceBuffer, KeyValueStore<Bytes, byte []>>as(smaStoreName)
                                 .withValueSerde(jsonSerde(PriceBuffer.class))
                 )
                 .toStream()

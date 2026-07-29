@@ -25,5 +25,5 @@ app:
   topics:
     trade-events: trade-events
   mail:
-    from: sandboxd3b3bcd4acec47fd8cad2882440a3d3b.mailgun.org
-    to: tomasdelpino28@gmail.com
+    from: ${MAILGUN_SMTP_USERNAME}
+    to: ${PERSONAL_EMAIL}

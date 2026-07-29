@@ -10,3 +10,5 @@ app:
   topics:
     candles: candles
     signals: signals
+  stores:
+    sma: sma-store
