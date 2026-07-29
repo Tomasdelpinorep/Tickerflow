@@ -1,0 +1,29 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: notification-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JacksonJsonDeserializer
+      properties:
+        spring.json.use.type.headers: false
+        spring.json.value.default.type: com.tickerflow.notification.events.TradeEvent
+  mail:
+    host: smtp.mailgun.org
+    port: 587
+    username: ${MAILGUN_SMTP_USERNAME}
+    password: ${MAILGUN_SMTP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+app:
+  topics:
+    trade-events: trade-events
+  mail:
+    from: sandboxd3b3bcd4acec47fd8cad2882440a3d3b.mailgun.org
+    to: tomasdelpino28@gmail.com
