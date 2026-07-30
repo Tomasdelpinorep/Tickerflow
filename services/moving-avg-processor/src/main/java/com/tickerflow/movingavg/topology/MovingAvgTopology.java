@@ -20,6 +20,7 @@ import org.springframework.kafka.annotation.EnableKafkaStreams;
 import org.springframework.kafka.support.serializer.JacksonJsonDeserializer;
 import org.springframework.kafka.support.serializer.JacksonJsonSerde;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -85,6 +86,7 @@ public class MovingAvgTopology {
                         SignalEvent.builder()
                                 .symbol(key.split(":")[0])
                                 .windowSize(key.split(":")[1])
+                                .executePrice(BigDecimal.valueOf(buffer.closes().getLast()))
                                 .smaShort(buffer.prevSmaShort())
                                 .smaLong(buffer.prevSmaLong())
                                 .signalType(buffer.signalType())

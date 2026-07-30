@@ -42,7 +42,7 @@ public class TradeService {
             }
 
             Trade latest = latestOpenTrade.get();
-            latest.setClosePrice(BigDecimal.valueOf(signal.smaShort()));
+            latest.setClosePrice(signal.executePrice());
             BigDecimal priceDiff = latest.getClosePrice().subtract(latest.getOpenPrice());
             BigDecimal pnl = priceDiff.multiply(BigDecimal.valueOf(latest.getQuantity()));
             latest.setPnl(pnl);
@@ -54,7 +54,7 @@ public class TradeService {
                     .symbol(signal.symbol())
                     .signalType(signal.signalType())
                     .quantity(TradeConstants.DEFAULT_TRADE_QUANTITY)
-                    .openPrice(BigDecimal.valueOf(signal.smaShort()))
+                    .openPrice(signal.executePrice())
                     .status(TradeStatus.OPEN)
                     .createdAt(Instant.now())
                     .build());

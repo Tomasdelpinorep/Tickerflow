@@ -52,7 +52,8 @@ Local pipeline complete and working end-to-end. AWS deployment is phase 2.
 - [x] Moving Average Processor (Kafka Streams — SMA-20/50 crossover signals)
 - [x] Trading Engine (paper trades, transactional outbox, choreography saga)
 - [x] Notification Service (Kafka consumer → email via Mailgun SMTP)
-- [ ] Trade P&L — open_price/close_price/pnl columns, calculate on position close
+- [x] Trade P&L — open_price/close_price/pnl columns, calculate on position close
+- [ ] Execution price — add `price` field to `SignalEvent` (candle close at crossover time); use in trading engine instead of smaShort
 - [ ] Schema Registry (Avro — versioned event contracts, replace JSON)
 - [ ] AWS deployment (MSK, ECS Fargate, RDS, Terraform)
 - [ ] Observability (CloudWatch, X-Ray)
@@ -79,3 +80,4 @@ Services connect to:
 - **Choreography saga** over orchestration: no central coordinator; each service reacts to events and emits its own. Looser coupling, no single point of failure.
 - **Kafka Streams** over consumer loop for aggregation: stateful operators (windowed aggregation, joins) with built-in fault tolerance via RocksDB changelog topics.
 - **Schema-per-service Postgres**: each service owns its schema, enforcing that services never share tables or bypass the event bus.
+- **Candle close price as execution price, carried in `SignalEvent`**: at the moment a crossover signal fires, the triggering candle just closed — its close price is the freshest known price, not stale. Enriching the signal event with this price keeps events self-contained and the pipeline deterministic under replay: the same signal always produces the same trade record regardless of when it is consumed or replayed. Querying a mutable state store at consumption time would make P&L non-deterministic (consumer lag or replay would silently change execution prices). Slippage is modelled explicitly if needed, not accidentally introduced via lag.
