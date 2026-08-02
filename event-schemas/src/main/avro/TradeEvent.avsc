@@ -5,7 +5,6 @@
   "fields": [
     {"name": "id", "type": "long"},
     {"name": "symbol", "type": "string"},
-    {"name": "signalType", "type": "string"},
     {"name": "quantity", "type": "int"},
     {"name": "openPrice", "type": "double"},
     {"name": "closePrice", "type": ["null", "double"], "default": null},

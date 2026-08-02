@@ -25,12 +25,13 @@ public class EmailService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(from);
         message.setTo(to);
-        message.setSubject("TickerFlow: " + trade.getSignalType() + " " + trade.getSymbol());
-        message.setText("Trade executed:\n\nSymbol: " + trade.getSymbol() +
-                "\nType: " + trade.getSignalType() +
-                "\nPrice: $" + trade.getOpenPrice() +
-                "\nQuantity: " + trade.getQuantity() +
-                "\nStatus: " + trade.getStatus());
+        message.setSubject("TickerFlow: " + trade.getSymbol() + " position " + trade.getStatus().toLowerCase());
+        message.setText("Trade update:\n\nSymbol: " + trade.getSymbol() +
+                "\nStatus: " + trade.getStatus() +
+                "\nOpen price: $" + trade.getOpenPrice() +
+                "\nClose price: " + (trade.getClosePrice() != null ? "$" + trade.getClosePrice() : "—") +
+                "\nPnL: " + (trade.getPnl() != null ? "$" + trade.getPnl() : "—") +
+                "\nQuantity: " + trade.getQuantity());
         mailSender.send(message);
         log.info("Email sent for trade {}", trade.getId());
     }

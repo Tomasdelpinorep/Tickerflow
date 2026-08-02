@@ -1,6 +1,5 @@
 package com.tickerflow.trading.entities;
 
-import com.tickerflow.trading.enums.SignalType;
 import com.tickerflow.trading.enums.TradeStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -23,10 +22,6 @@ public class Trade {
     private Long id;
 
     private String symbol;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "signal_type")
-    private SignalType signalType;
 
     private int quantity;
 
