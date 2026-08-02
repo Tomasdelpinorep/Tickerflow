@@ -1,6 +1,6 @@
 package com.tickerflow.notification.services;
 
-import com.tickerflow.notification.events.TradeEvent;
+import com.tickerflow.events.TradeEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -25,13 +25,13 @@ public class EmailService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(from);
         message.setTo(to);
-        message.setSubject("TickerFlow: " + trade.signalType() + " " + trade.symbol());
-        message.setText("Trade executed:\n\nSymbol: " + trade.symbol() +
-                "\nType: " + trade.signalType() +
-                "\nPrice: $" + trade.price() +
-                "\nQuantity: " + trade.quantity() +
-                "\nStatus: " + trade.status());
+        message.setSubject("TickerFlow: " + trade.getSignalType() + " " + trade.getSymbol());
+        message.setText("Trade executed:\n\nSymbol: " + trade.getSymbol() +
+                "\nType: " + trade.getSignalType() +
+                "\nPrice: $" + trade.getOpenPrice() +
+                "\nQuantity: " + trade.getQuantity() +
+                "\nStatus: " + trade.getStatus());
         mailSender.send(message);
-        log.info("Email sent for trade {}", trade.id());
+        log.info("Email sent for trade {}", trade.getId());
     }
 }

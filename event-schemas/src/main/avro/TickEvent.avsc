@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "name": "TickEvent",
+  "namespace": "com.tickerflow.events",
+  "fields": [
+    {"name": "symbol", "type": "string"},
+    {"name": "price", "type": "double"},
+    {"name": "volume", "type": "double"},
+    {"name": "timestamp", "type": {"type": "long", "logicalType": "timestamp-millis"}}
+  ]
+}

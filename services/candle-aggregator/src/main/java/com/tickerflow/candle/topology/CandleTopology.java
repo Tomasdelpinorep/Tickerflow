@@ -1,8 +1,8 @@
 package com.tickerflow.candle.topology;
 
-import com.tickerflow.candle.event.CandleEvent;
-import com.tickerflow.candle.event.TickEvent;
 import com.tickerflow.candle.stream.CandleAggregate;
+import com.tickerflow.events.CandleEvent;
+import com.tickerflow.events.TickEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -10,12 +10,12 @@ import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.kstream.*;
 import org.apache.kafka.streams.state.WindowStore;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafkaStreams;
 import org.springframework.kafka.support.serializer.JacksonJsonDeserializer;
 import org.springframework.kafka.support.serializer.JacksonJsonSerde;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.time.Duration;
 import java.util.Map;
@@ -44,8 +44,7 @@ public class CandleTopology {
 
     @Bean
     public KStream<String, TickEvent> buildTopology(StreamsBuilder builder) {
-        KStream<String, TickEvent> tickStream = builder.stream(rawTicksTopic,
-                Consumed.with(Serdes.String(), jsonSerde(TickEvent.class)));
+        KStream<String, TickEvent> tickStream = builder.stream(rawTicksTopic, Consumed.with(Serdes.String(), null));
 
         buildCandleStream(tickStream, Duration.ofMinutes(1), "1m", candle1mStore);
         buildCandleStream(tickStream, Duration.ofMinutes(5), "5m", candle5mStore);
@@ -62,40 +61,40 @@ public class CandleTopology {
                         () -> null,
                         (symbol, tick, agg) -> agg == null
                                 ? CandleAggregate.builder()
-                                .open(tick.price())
-                                .high(tick.price())
-                                .low(tick.price())
-                                .close(tick.price())
-                                .volume(tick.volume())
+                                .open(tick.getPrice())
+                                .high(tick.getPrice())
+                                .low(tick.getPrice())
+                                .close(tick.getPrice())
+                                .volume(tick.getVolume())
                                 .build()
                                 : CandleAggregate.builder()
                                 .open(agg.open())
-                                .high(Math.max(tick.price(), agg.high()))
-                                .low(Math.min(tick.price(), agg.low()))
-                                .close(tick.price())
-                                .volume(agg.volume() + tick.volume())
+                                .high(Math.max(tick.getPrice(), agg.high()))
+                                .low(Math.min(tick.getPrice(), agg.low()))
+                                .close(tick.getPrice())
+                                .volume(agg.volume() + tick.getVolume())
                                 .build(),
                         Materialized.<String, CandleAggregate, WindowStore<Bytes, byte[]>>as(storeName)
-                                .withValueSerde(jsonSerde(CandleAggregate.class)) // No need for key serde, default is declared in yml
+                                .withValueSerde(jsonSerde(CandleAggregate.class))
                 )
                 .suppress(Suppressed.untilWindowCloses(Suppressed.BufferConfig.unbounded()))
                 .toStream()
                 .map((windowedKey, agg) -> KeyValue.pair(
                         windowedKey.key(),
-                        CandleEvent.builder()
-                                .symbol(windowedKey.key())
-                                .open(agg.open())
-                                .high(agg.high())
-                                .low(agg.low())
-                                .close(agg.close())
-                                .volume(agg.volume())
-                                .windowSize(windowSize)
-                                .windowStart(windowedKey.window().startTime())
-                                .windowEnd(windowedKey.window().endTime())
+                        CandleEvent.newBuilder()
+                                .setSymbol(windowedKey.key())
+                                .setOpen(agg.open())
+                                .setHigh(agg.high())
+                                .setLow(agg.low())
+                                .setClose(agg.close())
+                                .setVolume(agg.volume())
+                                .setWindowSize(windowSize)
+                                .setWindowStart(windowedKey.window().startTime())
+                                .setWindowEnd(windowedKey.window().endTime())
                                 .build()))
                 .peek((key, candle) -> log.info("Candle closed: {} {} O:{} H:{} L:{} C:{}",
-                        candle.windowSize(), candle.symbol(),candle.open(), candle.high(), candle.low(), candle.close()))
-                .to(candlesTopic, Produced.valueSerde(jsonSerde(CandleEvent.class))); // No need for key serde, default is declared in yml
+                        candle.getWindowSize(), candle.getSymbol(), candle.getOpen(), candle.getHigh(), candle.getLow(), candle.getClose()))
+                .to(candlesTopic, Produced.with(Serdes.String(), null));
     }
 
     private <T> JacksonJsonSerde<T> jsonSerde(Class<T> clazz) {

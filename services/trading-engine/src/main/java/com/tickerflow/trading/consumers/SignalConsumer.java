@@ -1,6 +1,6 @@
 package com.tickerflow.trading.consumers;
 
-import com.tickerflow.trading.events.SignalEvent;
+import com.tickerflow.events.SignalEvent;
 import com.tickerflow.trading.service.TradeService;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;

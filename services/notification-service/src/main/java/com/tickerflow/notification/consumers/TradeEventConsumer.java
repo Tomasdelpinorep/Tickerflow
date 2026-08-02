@@ -1,6 +1,6 @@
 package com.tickerflow.notification.consumers;
 
-import com.tickerflow.notification.events.TradeEvent;
+import com.tickerflow.events.TradeEvent;
 import com.tickerflow.notification.services.EmailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;

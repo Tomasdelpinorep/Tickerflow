@@ -1,10 +1,9 @@
 package com.tickerflow.ingestion.publisher;
 
+import com.tickerflow.events.TickEvent;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-
-import com.tickerflow.ingestion.event.TickEvent;
 
 @Service
 public class TickEventPublisher {
@@ -19,6 +18,6 @@ public class TickEventPublisher {
     }
 
     public void publish(TickEvent tickEvent){
-        kafkaTemplate.send(topic, tickEvent.symbol(), tickEvent);
+        kafkaTemplate.send(topic, tickEvent.getSymbol(), tickEvent);
     }
 }

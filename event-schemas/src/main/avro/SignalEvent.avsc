@@ -1,0 +1,14 @@
+{
+  "type": "record",
+  "name": "SignalEvent",
+  "namespace": "com.tickerflow.events",
+  "fields": [
+    {"name": "symbol", "type": "string"},
+    {"name": "windowSize", "type": "string"},
+    {"name": "signalType", "type": "string"},
+    {"name": "executePrice", "type": "double"},
+    {"name": "smaShort", "type": "double"},
+    {"name": "smaLong", "type": "double"},
+    {"name": "timestamp", "type": {"type": "long", "logicalType": "timestamp-millis"}}
+  ]
+}

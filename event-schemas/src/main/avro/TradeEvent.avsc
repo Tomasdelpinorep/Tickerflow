@@ -1,0 +1,16 @@
+{
+  "type": "record",
+  "name": "TradeEvent",
+  "namespace": "com.tickerflow.events",
+  "fields": [
+    {"name": "id", "type": "long"},
+    {"name": "symbol", "type": "string"},
+    {"name": "signalType", "type": "string"},
+    {"name": "quantity", "type": "int"},
+    {"name": "openPrice", "type": "double"},
+    {"name": "closePrice", "type": ["null", "double"], "default": null},
+    {"name": "pnl", "type": ["null", "double"], "default": null},
+    {"name": "status", "type": "string"},
+    {"name": "createdAt", "type": {"type": "long", "logicalType": "timestamp-millis"}}
+  ]
+}

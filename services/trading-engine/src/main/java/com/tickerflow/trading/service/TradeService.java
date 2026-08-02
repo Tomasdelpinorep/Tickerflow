@@ -1,16 +1,17 @@
 package com.tickerflow.trading.service;
 
+import com.tickerflow.events.SignalEvent;
 import com.tickerflow.trading.constants.TradeConstants;
 import com.tickerflow.trading.entities.Outbox;
 import com.tickerflow.trading.entities.Trade;
 import com.tickerflow.trading.enums.OutboxEvents;
 import com.tickerflow.trading.enums.SignalType;
 import com.tickerflow.trading.enums.TradeStatus;
-import com.tickerflow.trading.events.SignalEvent;
 import com.tickerflow.trading.repositories.OutboxRepository;
 import com.tickerflow.trading.repositories.TradeRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.EnumUtils;
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.ObjectMapper;
 
@@ -33,28 +34,31 @@ public class TradeService {
 
     @Transactional
     public void executeTrade(SignalEvent signal) {
-        if (signal.signalType().equals(SignalType.SELL)) {
-            Optional<Trade> latestOpenTrade = tradeRepo.findLatestOpenTrade(signal.symbol());
+        if (SignalType.fromString(signal.getSignalType()).equals(SignalType.SELL)) {
+            Optional<Trade> latestOpenTrade = tradeRepo.findLatestOpenTrade(signal.getSymbol());
 
             if (latestOpenTrade.isEmpty()) {
-                log.warn("Discarding SELL signal for {}: no open trade to close", signal.symbol());
+                log.warn("Discarding SELL signal for {}: no open trade to close", signal.getSymbol());
                 return;
             }
 
             Trade latest = latestOpenTrade.get();
-            latest.setClosePrice(signal.executePrice());
-            BigDecimal priceDiff = latest.getClosePrice().subtract(latest.getOpenPrice());
+            BigDecimal closePrice = BigDecimal.valueOf(signal.getExecutePrice());
+            latest.setClosePrice(closePrice);
+            BigDecimal priceDiff = closePrice.subtract(latest.getOpenPrice());
             BigDecimal pnl = priceDiff.multiply(BigDecimal.valueOf(latest.getQuantity()));
             latest.setPnl(pnl);
-            latest.setStatus(TradeStatus.CLOSED);
+            latest.setSignalType(SignalType.SELL); // I hate this, problem is that we shouldnt reuse the same trade
+            // item, selling is a different event and should be its own row!!
             tradeRepo.save(latest);
+            latest.setSignalType(SignalType.SELL);
             saveOutboxEvent(OutboxEvents.TRADE_CLOSED, latest);
         } else {
             Trade trade = tradeRepo.save(Trade.builder()
-                    .symbol(signal.symbol())
-                    .signalType(signal.signalType())
+                    .symbol(signal.getSymbol())
+                    .signalType(SignalType.valueOf(signal.getSignalType()))
                     .quantity(TradeConstants.DEFAULT_TRADE_QUANTITY)
-                    .openPrice(signal.executePrice())
+                    .openPrice(BigDecimal.valueOf(signal.getExecutePrice()))
                     .status(TradeStatus.OPEN)
                     .createdAt(Instant.now())
                     .build());

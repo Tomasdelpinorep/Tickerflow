@@ -5,10 +5,10 @@ spring:
       group-id: notification-service
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JacksonJsonDeserializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
       properties:
-        spring.json.use.type.headers: false
-        spring.json.value.default.type: com.tickerflow.notification.events.TradeEvent
+        schema.registry.url: http://localhost:8082
+        specific.avro.reader: "true"
   mail:
     host: smtp.mailgun.org
     port: 587

@@ -14,7 +14,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import com.tickerflow.ingestion.config.FinnhubProperties;
-import com.tickerflow.ingestion.event.TickEvent;
+import com.tickerflow.events.TickEvent;
 import com.tickerflow.ingestion.publisher.TickEventPublisher;
 
 import tools.jackson.databind.JsonNode;
@@ -76,11 +76,11 @@ public class FinnhubWebSocketClient implements WebSocket.Listener {
             }
 
             for (JsonNode tickJSON : root.get("data")) {
-                TickEvent tick = TickEvent.builder()
-                        .symbol(tickJSON.get("s").asString())
-                        .price(tickJSON.get("p").asDouble())
-                        .volume(tickJSON.get("v").asDouble())
-                        .timestamp(Instant.ofEpochMilli(tickJSON.get("t").asLong()))
+                TickEvent tick = TickEvent.newBuilder()
+                        .setSymbol(tickJSON.get("s").asString())
+                        .setPrice(tickJSON.get("p").asDouble())
+                        .setVolume(tickJSON.get("v").asDouble())
+                        .setTimestamp(Instant.ofEpochMilli(tickJSON.get("t").asLong()))
                         .build();
 
                 publisher.publish(tick);

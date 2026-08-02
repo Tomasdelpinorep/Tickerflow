@@ -5,6 +5,9 @@ spring:
       application-id: moving-avg-processor
       properties:
         default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+        default.value.serde: io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
+        schema.registry.url: http://localhost:8082
+        specific.avro.reader: "true"
 
 app:
   topics:

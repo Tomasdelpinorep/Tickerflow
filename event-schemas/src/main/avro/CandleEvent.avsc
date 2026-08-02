@@ -1,0 +1,16 @@
+{
+  "type": "record",
+  "name": "CandleEvent",
+  "namespace": "com.tickerflow.events",
+  "fields": [
+    {"name": "symbol", "type": "string"},
+    {"name": "open", "type": "double"},
+    {"name": "high", "type": "double"},
+    {"name": "low", "type": "double"},
+    {"name": "close", "type": "double"},
+    {"name": "volume", "type": "double"},
+    {"name": "windowStart", "type": {"type": "long", "logicalType": "timestamp-millis"}},
+    {"name": "windowEnd", "type": {"type": "long", "logicalType": "timestamp-millis"}},
+    {"name": "windowSize", "type": "string"}
+  ]
+}
