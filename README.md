@@ -39,7 +39,7 @@ flowchart LR
 - **Streaming:** Apache Kafka, Kafka Streams
 - **Storage:** PostgreSQL (per-service schema)
 - **Local dev:** Docker Compose
-- **Cloud (phase 2):** AWS MSK, ECS Fargate, RDS, Terraform/CDK
+- **Cloud (phase 2):** AWS EC2 + RDS (Terraform); Kafka on Confluent Cloud (Basic cluster)
 - **Data source:** [Finnhub](https://finnhub.io) WebSocket API (free tier)
 
 ## Status
@@ -81,3 +81,4 @@ Services connect to:
 - **Kafka Streams** over consumer loop for aggregation: stateful operators (windowed aggregation, joins) with built-in fault tolerance via RocksDB changelog topics.
 - **Schema-per-service Postgres**: each service owns its schema, enforcing that services never share tables or bypass the event bus.
 - **Candle close price as execution price, carried in `SignalEvent`**: at the moment a crossover signal fires, the triggering candle just closed — its close price is the freshest known price, not stale. Enriching the signal event with this price keeps events self-contained and the pipeline deterministic under replay: the same signal always produces the same trade record regardless of when it is consumed or replayed. Querying a mutable state store at consumption time would make P&L non-deterministic (consumer lag or replay would silently change execution prices). Slippage is modelled explicitly if needed, not accidentally introduced via lag.
+- **Kafka on Confluent Cloud, not self-hosted on the app EC2 instance**: the assumption that self-hosting is "free because the box is already paid for" didn't hold up under a real memory audit. All 5 services + a self-hosted broker + Schema Registry need to fit on a single `t3.small` (2GiB RAM), and the Kafka Streams state stores in candle-aggregator/moving-avg-processor add 12 RocksDB instances (one per state store per partition) whose off-heap memory — up to ~1.2GB at Kafka Streams' defaults — isn't touched by JVM tuning. Closing that gap required either a `t3.medium` upgrade (+$15.19/mo) or GraalVM native-image, which was rejected: RocksDB's memory is native, reached via JNI, so native-image doesn't reduce it at all, and `rocksdbjni`'s native-image compatibility is an open, unresolved question upstream. Confluent Cloud Basic's actual usage-based cost for our real traffic (10 large-cap symbols) works out to ~$0.30–$1.10/month — cheaper than the instance upgrade, fully managed, no compatibility risk.
