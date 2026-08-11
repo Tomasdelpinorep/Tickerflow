@@ -4,7 +4,7 @@ output "ec2_public_ip" {
 }
 
 output "rds_endpoint" {
-  value = module.rds.endpoint
+  value = module.rds.db_endpoint
 }
 
 output "ecr_registry_url" {

@@ -9,7 +9,7 @@ variable "environment" {
 }
 
 variable "my_ip" {
-  type        = string
+  type = string
 }
 
 variable "ec2_key_name" {
@@ -18,6 +18,31 @@ variable "ec2_key_name" {
 }
 
 variable "db_password" {
+  type      = string
+  sensitive = true
+}
+
+variable "confluent_cloud_api_key" {
+  type      = string
+  sensitive = true
+}
+
+variable "confluent_cloud_api_secret" {
+  type      = string
+  sensitive = true
+}
+
+variable "mailgun_smtp_username" {
+  type      = string
+  sensitive = true
+}
+
+variable "mailgun_smtp_password" {
+  type      = string
+  sensitive = true
+}
+
+variable "personal_email" {
   type      = string
   sensitive = true
 }

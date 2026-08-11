@@ -50,7 +50,19 @@ resource "aws_instance" "ec2_instance" {
   vpc_security_group_ids = [var.instance_sg_id]
   key_name               = var.ec2_key_name
   iam_instance_profile   = aws_iam_instance_profile.ec2_profile.name
-  user_data              = templatefile("user_data.sh", { aws_region = var.aws_region, ecr_registry = var.ec2_registry_url })
+  user_data = templatefile("${path.module}/user_data.sh", {
+    aws_region                     = var.aws_region,
+    ecr_registry                   = var.ec2_registry_url
+    spring_kafka_bootstrap_servers = var.spring_kafka_bootstrap_servers
+    spring_kafka_api_key           = var.spring_kafka_api_key
+    spring_kafka_api_secret        = var.spring_kafka_api_secret
+    spring_datasource_url          = var.spring_datasource_url
+    spring_datasource_username     = var.spring_datasource_username
+    spring_datasource_password     = var.spring_datasource_password
+    mailgun_smtp_username          = var.mailgun_smtp_username
+    mailgun_smtp_password          = var.mailgun_smtp_password
+    personal_email                 = var.personal_email
+  })
 
   tags = {
     Name = "tickerflow-${var.environment}"

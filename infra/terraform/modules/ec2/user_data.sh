@@ -17,10 +17,16 @@ aws ecr get-login-password --region ${aws_region} | docker login --username AWS 
 # create cron job to refresh credentials every 6 hours
 echo "0 */6 * * * root aws ecr get-login-password --region ${aws_region} | docker login --username AWS --password-stdin ${ecr_registry}" > /etc/cron.d/ecr-refresh
 
-mkdir /opt/ticketflow/
+mkdir /opt/tickerflow/
 cat > /opt/tickerflow/.env <<-EOF
-SPRING_KAFKA_BOOTSTRAP_SERVERS=
-SPRING_DATASOURCE_URL=
-SPRING_DATASOURCE_USERNAME=
-SPRING_DATASOURCE_PASSWORD=
+SPRING_PROFILES_ACTIVE=prod
+SPRING_KAFKA_BOOTSTRAP_SERVERS=${spring_kafka_bootstrap_servers}
+SPRING_KAFKA_API_KEY=${spring_kafka_api_key}
+SPRING_KAFKA_API_SECRET=${spring_kafka_api_secret}
+SPRING_DATASOURCE_URL=${spring_datasource_url}
+SPRING_DATASOURCE_USERNAME=${spring_datasource_username}
+SPRING_DATASOURCE_PASSWORD=${spring_datasource_password}
+MAILGUN_SMTP_USERNAME=${mailgun_smtp_username}
+MAILGUN_SMTP_PASSWORD=${mailgun_smtp_password}
+PERSONAL_EMAIL=${personal_email}
 EOF
