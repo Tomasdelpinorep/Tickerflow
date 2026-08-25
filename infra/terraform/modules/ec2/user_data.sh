@@ -19,6 +19,9 @@ echo "0 */6 * * * root aws ecr get-login-password --region ${aws_region} | docke
 
 mkdir /opt/tickerflow/
 cat > /opt/tickerflow/.env <<-EOF
+SCHEMA_REGISTRY_URL=${schema_registry_url}
+SCHEMA_REGISTRY_API_KEY=${schema_registry_api_key}
+SCHEMA_REGISTRY_API_SECRET=${schema_registry_api_secret}
 SPRING_PROFILES_ACTIVE=prod
 SPRING_KAFKA_BOOTSTRAP_SERVERS=${spring_kafka_bootstrap_servers}
 SPRING_KAFKA_API_KEY=${spring_kafka_api_key}

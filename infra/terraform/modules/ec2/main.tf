@@ -53,6 +53,9 @@ resource "aws_instance" "ec2_instance" {
   user_data = templatefile("${path.module}/user_data.sh", {
     aws_region                     = var.aws_region,
     ecr_registry                   = var.ec2_registry_url
+    schema_registry_url            = var.schema_registry_url
+    schema_registry_api_key        = var.schema_registry_api_key
+    schema_registry_api_secret     = var.schema_registry_api_secret
     spring_kafka_bootstrap_servers = var.spring_kafka_bootstrap_servers
     spring_kafka_api_key           = var.spring_kafka_api_key
     spring_kafka_api_secret        = var.spring_kafka_api_secret

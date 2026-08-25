@@ -30,6 +30,9 @@ module "ec2" {
   spring_datasource_url          = "jdbc:postgresql://${module.rds.db_endpoint}/tickerflow"
   spring_datasource_username     = "tickerflow"
   spring_datasource_password     = var.db_password
+  schema_registry_url            = data.confluent_schema_registry_cluster.schema_registry_cluster.rest_endpoint
+  schema_registry_api_key        = confluent_api_key.schema_registry_api_key.id
+  schema_registry_api_secret     = confluent_api_key.schema_registry_api_key.secret
 }
 
 module "rds" {

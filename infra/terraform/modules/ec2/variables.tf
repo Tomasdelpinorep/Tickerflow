@@ -63,3 +63,17 @@ variable "spring_datasource_password" {
   type      = string
   sensitive = true
 }
+
+variable "schema_registry_url" {
+  type = string
+}
+
+variable "schema_registry_api_key" {
+  type = string
+  sensitive = true
+}
+
+variable "schema_registry_api_secret" {
+  type = string
+  sensitive = true
+}
