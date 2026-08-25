@@ -13,7 +13,7 @@ public class SignalConsumer {
         this.tradeService = tradeService;
     }
 
-    // @KafkaListener deserializes automatically via spring.kafka.consumer properties in application.yaml.
+    // @KafkaListener deserializes automatically via spring.kafka.consumer properties in application.yml.
     // Kafka Streams has no yaml hook for serde config, so jsonSerde() configures it programmatically there.
     @KafkaListener(topics = "${app.topics.signals}")
     public void consume(SignalEvent signal) {
