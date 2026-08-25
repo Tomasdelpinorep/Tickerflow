@@ -4,9 +4,9 @@ WORKDIR /build
 COPY event-schemas ./event-schemas
 RUN cd event-schemas && mvn install -DskipTests
 
-COPY services/candle-aggregator ./services/candle-aggregator
-RUN cd services/candle-aggregator && mvn package -DskipTests
+COPY services/trading-engine ./services/trading-engine
+RUN cd services/trading-engine && mvn package -DskipTests
 
 FROM eclipse-temurin:21-jre
-COPY --from=builder /build/services/candle-aggregator/target/*.jar /app.jar
+COPY --from=builder /build/services/trading-engine/target/*.jar /app.jar
 ENTRYPOINT ["java", "-jar", "/app.jar"]
