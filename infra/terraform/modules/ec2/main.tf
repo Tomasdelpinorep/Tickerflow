@@ -65,6 +65,7 @@ resource "aws_instance" "ec2_instance" {
     mailgun_smtp_username          = var.mailgun_smtp_username
     mailgun_smtp_password          = var.mailgun_smtp_password
     personal_email                 = var.personal_email
+    finnhub_api_key                = var.finnhub_api_key
   })
 
   tags = {

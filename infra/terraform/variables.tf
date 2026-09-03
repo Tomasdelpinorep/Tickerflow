@@ -46,3 +46,8 @@ variable "personal_email" {
   type      = string
   sensitive = true
 }
+
+variable "finnhub_api_key" {
+  type      = string
+  sensitive = true
+}

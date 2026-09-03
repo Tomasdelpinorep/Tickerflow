@@ -77,3 +77,8 @@ variable "schema_registry_api_secret" {
   type = string
   sensitive = true
 }
+
+variable "finnhub_api_key" {
+  type      = string
+  sensitive = true
+}

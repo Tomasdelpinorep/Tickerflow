@@ -33,6 +33,7 @@ module "ec2" {
   schema_registry_url            = data.confluent_schema_registry_cluster.schema_registry_cluster.rest_endpoint
   schema_registry_api_key        = confluent_api_key.schema_registry_api_key.id
   schema_registry_api_secret     = confluent_api_key.schema_registry_api_key.secret
+  finnhub_api_key                = var.finnhub_api_key
 }
 
 module "rds" {

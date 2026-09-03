@@ -32,4 +32,5 @@ SPRING_DATASOURCE_PASSWORD=${spring_datasource_password}
 MAILGUN_SMTP_USERNAME=${mailgun_smtp_username}
 MAILGUN_SMTP_PASSWORD=${mailgun_smtp_password}
 PERSONAL_EMAIL=${personal_email}
+FINNHUB_API_KEY=${finnhub_api_key}
 EOF
