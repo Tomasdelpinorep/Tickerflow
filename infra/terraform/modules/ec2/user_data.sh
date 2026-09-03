@@ -15,6 +15,9 @@ systemctl start docker
 aws ecr get-login-password --region ${aws_region} | docker login --username AWS --password-stdin ${ecr_registry}
 
 # create cron job to refresh credentials every 6 hours
+yum install -y cronie
+systemctl enable crond
+systemctl start crond
 echo "0 */6 * * * root aws ecr get-login-password --region ${aws_region} | docker login --username AWS --password-stdin ${ecr_registry}" > /etc/cron.d/ecr-refresh
 
 mkdir /opt/tickerflow/
@@ -34,3 +37,33 @@ MAILGUN_SMTP_PASSWORD=${mailgun_smtp_password}
 PERSONAL_EMAIL=${personal_email}
 FINNHUB_API_KEY=${finnhub_api_key}
 EOF
+
+docker run -d \
+  --name ingestion-service \
+  --restart unless-stopped \
+  --env-file /opt/tickerflow/.env \
+  "${ecr_registry}"/tickerflow/ingestion-service:latest
+
+docker run -d \
+  --name candle-aggregator \
+  --restart unless-stopped \
+  --env-file /opt/tickerflow/.env \
+  "${ecr_registry}"/tickerflow/candle-aggregator:latest
+
+docker run -d \
+  --name moving-avg-processor \
+  --restart unless-stopped \
+  --env-file /opt/tickerflow/.env \
+  "${ecr_registry}"/tickerflow/moving-avg-processor:latest
+
+docker run -d \
+  --name trading-engine \
+  --restart unless-stopped \
+  --env-file /opt/tickerflow/.env \
+  "${ecr_registry}"/tickerflow/trading-engine:latest
+
+docker run -d \
+  --name notification-service \
+  --restart unless-stopped \
+  --env-file /opt/tickerflow/.env \
+  "${ecr_registry}"/tickerflow/notification-service:latest
